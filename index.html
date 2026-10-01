@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SafeTag - Emergency QR System</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- QR Generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+
+<body>
+
+    <!-- ================================
+         NAVBAR
+    ================================= -->
+
+    <nav class="navbar">
+
+        <div class="brand">
+            <div class="brand-icon">🛡️</div>
+
+            <div>
+                <h2>SafeTag</h2>
+                <span>Emergency Identification</span>
+            </div>
+        </div>
+
+        <div id="navActions"></div>
+
+    </nav>
+
+
+    <!-- ================================
+         AUTH PAGE
+    ================================= -->
+
+    <section id="authPage" class="page">
+
+        <div class="auth-container">
+
+            <div class="auth-info">
+
+                <span class="badge">🚨 Emergency Safety System</span>
+
+                <h1>
+                    Help should never
+                    <span>wait.</span>
+                </h1>
+
+                <p>
+                    SafeTag provides a privacy-focused emergency
+                    identification system using a unique QR code.
+                </p>
+
+                <div class="security-points">
+
+                    <div>
+                        <span>🔐</span>
+                        <p>No personal data inside QR</p>
+                    </div>
+
+                    <div>
+                        <span>🏥</span>
+                        <p>Emergency responder access</p>
+                    </div>
+
+                    <div>
+                        <span>📝</span>
+                        <p>Every emergency access is logged</p>
+                    </div>
+
+                    <div>
+                        <span>🚫</span>
+                        <p>Tags can be revoked</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="auth-card">
+
+                <div class="auth-tabs">
+
+                    <button
+                        class="auth-tab active"
+                        onclick="showAuth('login')">
+
+                        Login
+
+                    </button>
+
+                    <button
+                        class="auth-tab"
+                        onclick="showAuth('register')">
+
+                        Register
+
+                    </button>
+
+                </div>
+
+
+                <!-- LOGIN -->
+
+                <div id="loginForm">
+
+                    <h2>Welcome back</h2>
+
+                    <p class="muted">
+                        Select your account type
+                    </p>
+
+
+                    <div class="role-selector">
+
+                        <button
+                            class="role-btn active"
+                            onclick="selectLoginRole('user', this)">
+
+                            👤
+                            <span>User</span>
+
+                        </button>
+
+                        <button
+                            class="role-btn"
+                            onclick="selectLoginRole('hospital', this)">
+
+                            🏥
+                            <span>Hospital</span>
+
+                        </button>
+
+                        <button
+                            class="role-btn"
+                            onclick="selectLoginRole('admin', this)">
+
+                            🛡️
+                            <span>Admin</span>
+
+                        </button>
+
+                    </div>
+
+
+                    <form onsubmit="login(event)">
+
+                        <label>Email</label>
+
+                        <input
+                            type="email"
+                            id="loginEmail"
+                            placeholder="Enter email"
+                            required
+                        >
+
+
+                        <label>Password</label>
+
+                        <input
+                            type="password"
+                            id="loginPassword"
+                            placeholder="Enter password"
+                            required
+                        >
+
+
+                        <button class="primary-btn">
+                            Login →
+                        </button>
+
+                    </form>
+
+
+                    <div id="loginMessage" class="message"></div>
+
+
+                    <div class="demo-box">
+
+                        <strong>Demo accounts</strong>
+
+                        <p>
+                            Admin:
+                            admin@safetag.com /
+                            admin123
+                        </p>
+
+                        <p>
+                            Hospital:
+                            hospital@safetag.com /
+                            hospital123
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- REGISTER -->
+
+                <div id="registerForm" class="hidden">
+
+                    <h2>Create SafeTag Account</h2>
+
+                    <p class="muted">
+                        Register as a SafeTag user
+                    </p>
+
+
+                    <form onsubmit="registerUser(event)">
+
+                        <label>Full Name</label>
+
+                        <input
+                            type="text"
+                            id="registerName"
+                            placeholder="Your full name"
+                            required
+                        >
+
+
+                        <label>Email</label>
+
+                        <input
+                            type="email"
+                            id="registerEmail"
+                            placeholder="Email address"
+                            required
+                        >
+
+
+                        <label>Mobile Number</label>
+
+                        <input
+                            type="tel"
+                            id="registerMobile"
+                            maxlength="10"
+                            placeholder="10 digit mobile"
+                            required
+                        >
+
+
+                        <label>Password</label>
+
+                        <input
+                            type="password"
+                            id="registerPassword"
+                            placeholder="Create password"
+                            minlength="6"
+                            required
+                        >
+
+
+                        <button class="primary-btn">
+                            Create Account
+                        </button>
+
+                    </form>
+
+
+                    <div id="registerMessage" class="message"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================================
+         USER DASHBOARD
+    ================================= -->
+
+    <section id="userPage" class="dashboard hidden">
+
+        <div class="dashboard-header">
+
+            <div>
+                <span class="badge">USER DASHBOARD</span>
+
+                <h1>
+                    Welcome,
+                    <span id="userWelcome"></span>
+                </h1>
+
+                <p>
+                    Manage your emergency profile and SafeTags.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="stats-grid">
+
+            <div class="stat-card">
+                <span>🏷️</span>
+                <div>
+                    <strong id="userTagCount">0</strong>
+                    <small>SafeTags</small>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <span>🟢</span>
+                <div>
+                    <strong id="userActiveCount">0</strong>
+                    <small>Active Tags</small>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <span>📝</span>
+                <div>
+                    <strong id="userAccessCount">0</strong>
+                    <small>Emergency Accesses</small>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-grid">
+
+
+            <!-- CREATE TAG -->
+
+            <div class="panel">
+
+                <div class="panel-title">
+
+                    <div>
+                        <h2>Create SafeTag</h2>
+                        <p>
+                            Generate a privacy-focused emergency QR.
+                        </p>
+                    </div>
+
+                    <span>🏷️</span>
+
+                </div>
+
+
+                <form onsubmit="createSafeTag(event)">
+
+                    <label>Tag Name</label>
+
+                    <input
+                        type="text"
+                        id="tagName"
+                        placeholder="Example: Bike Tag"
+                        required
+                    >
+
+
+                    <label>Emergency Contact Name</label>
+
+                    <input
+                        type="text"
+                        id="emergencyName"
+                        placeholder="Emergency contact"
+                        required
+                    >
+
+
+                    <label>Emergency Contact Number</label>
+
+                    <input
+                        type="tel"
+                        id="emergencyPhone"
+                        maxlength="10"
+                        placeholder="Emergency number"
+                        required
+                    >
+
+
+                    <label>Medical Alert</label>
+
+                    <textarea
+                        id="medicalAlert"
+                        placeholder="Optional: allergies, important medical alert, etc."
+                    ></textarea>
+
+
+                    <label>Emergency Photo</label>
+
+                    <input
+                        type="file"
+                        id="emergencyPhoto"
+                        accept="image/png,image/jpeg"
+                    >
+
+
+                    <button class="primary-btn">
+                        Generate SafeTag
+                    </button>
+
+                </form>
+
+            </div>
+
+
+
+            <!-- SECURITY INFO -->
+
+            <div class="panel security-panel">
+
+                <div class="panel-title">
+
+                    <div>
+                        <h2>Privacy Protection</h2>
+                        <p>
+                            How SafeTag protects information
+                        </p>
+                    </div>
+
+                    <span>🔐</span>
+
+                </div>
+
+
+                <div class="privacy-item">
+
+                    <div>🔑</div>
+
+                    <div>
+                        <strong>Random QR ID</strong>
+
+                        <p>
+                            Your personal information is not
+                            stored directly inside the QR.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="privacy-item">
+
+                    <div>👁️</div>
+
+                    <div>
+                        <strong>Controlled Access</strong>
+
+                        <p>
+                            Emergency information is shown only
+                            through the emergency access process.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="privacy-item">
+
+                    <div>📝</div>
+
+                    <div>
+                        <strong>Audit Trail</strong>
+
+                        <p>
+                            Emergency accesses are recorded.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="privacy-item">
+
+                    <div>🚫</div>
+
+                    <div>
+                        <strong>Revocable</strong>
+
+                        <p>
+                            Lost or compromised tags can be
+                            deactivated.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- USER TAGS -->
+
+        <div class="panel full-panel">
+
+            <div class="panel-title">
+
+                <div>
+                    <h2>My SafeTags</h2>
+                    <p>
+                        Manage your emergency identification tags.
+                    </p>
+                </div>
+
+                <span>🏷️</span>
+
+            </div>
+
+            <div id="userTagsContainer"></div>
+
+        </div>
+
+
+
+        <!-- USER LOGS -->
+
+        <div class="panel full-panel">
+
+            <div class="panel-title">
+
+                <div>
+                    <h2>Emergency Access History</h2>
+
+                    <p>
+                        See when your emergency profile was accessed.
+                    </p>
+                </div>
+
+                <span>📋</span>
+
+            </div>
+
+            <div id="userLogsContainer"></div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================================
+         HOSPITAL DASHBOARD
+    ================================= -->
+
+    <section id="hospitalPage" class="dashboard hidden">
+
+        <div class="dashboard-header">
+
+            <div>
+
+                <span class="badge">
+                    EMERGENCY RESPONDER
+                </span>
+
+                <h1>
+                    Emergency Access
+                </h1>
+
+                <p>
+                    Access minimum necessary information during
+                    an emergency.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-grid">
+
+
+            <div class="panel">
+
+                <div class="panel-title">
+
+                    <div>
+
+                        <h2>SafeTag Lookup</h2>
+
+                        <p>
+                            Enter the SafeTag ID from the QR.
+                        </p>
+
+                    </div>
+
+                    <span>🔎</span>
+
+                </div>
+
+
+                <form onsubmit="lookupTag(event)">
+
+                    <label>SafeTag ID</label>
+
+                    <input
+                        type="text"
+                        id="lookupId"
+                        placeholder="Example: ST-ABC12345"
+                        required
+                    >
+
+
+                    <label>Emergency Reason</label>
+
+                    <select id="accessReason">
+
+                        <option value="Accident">
+                            Accident
+                        </option>
+
+                        <option value="Medical Emergency">
+                            Medical Emergency
+                        </option>
+
+                        <option value="Unconscious Person">
+                            Unconscious Person
+                        </option>
+
+                        <option value="Other Emergency">
+                            Other Emergency
+                        </option>
+
+                    </select>
+
+
+                    <button class="danger-btn">
+                        🚨 Request Emergency Access
+                    </button>
+
+                </form>
+
+
+                <div id="hospitalMessage" class="message"></div>
+
+            </div>
+
+
+
+            <div class="panel">
+
+                <div class="panel-title">
+
+                    <div>
+                        <h2>Responder Guidelines</h2>
+                        <p>
+                            Use information only for genuine
+                            emergency assistance.
+                        </p>
+                    </div>
+
+                    <span>🏥</span>
+
+                </div>
+
+
+                <div class="guideline">
+
+                    <strong>01</strong>
+
+                    <p>
+                        Verify that an emergency situation exists.
+                    </p>
+
+                </div>
+
+
+                <div class="guideline">
+
+                    <strong>02</strong>
+
+                    <p>
+                        Access only information required to help.
+                    </p>
+
+                </div>
+
+
+                <div class="guideline">
+
+                    <strong>03</strong>
+
+                    <p>
+                        Do not share emergency information with
+                        unauthorized people.
+                    </p>
+
+                </div>
+
+
+                <div class="guideline">
+
+                    <strong>04</strong>
+
+                    <p>
+                        Every access is recorded in the audit log.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RESULT -->
+
+        <div
+            id="emergencyResult"
+            class="panel full-panel hidden"
+        >
+
+            <div class="emergency-profile">
+
+                <div id="emergencyPhotoContainer"></div>
+
+                <div>
+
+                    <span class="status active">
+                        EMERGENCY ACCESS
+                    </span>
+
+                    <h2 id="emergencyPersonName"></h2>
+
+                    <p id="emergencyTagName"></p>
+
+                </div>
+
+            </div>
+
+
+            <div class="emergency-information">
+
+                <div class="info-box">
+
+                    <span>📞</span>
+
+                    <strong>
+                        Emergency Contact
+                    </strong>
+
+                    <p id="emergencyContact"></p>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <span>🏥</span>
+
+                    <strong>
+                        Medical Alert
+                    </strong>
+
+                    <p id="emergencyMedical"></p>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <span>🏷️</span>
+
+                    <strong>
+                        SafeTag ID
+                    </strong>
+
+                    <p id="emergencyTagId"></p>
+
+                </div>
+
+            </div>
+
+
+            <a
+                id="callEmergency"
+                class="call-btn"
+            >
+                📞 Call Emergency Contact
+            </a>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================================
+         ADMIN DASHBOARD
+    ================================= -->
+
+    <section id="adminPage" class="dashboard hidden">
+
+        <div class="dashboard-header">
+
+            <div>
+
+                <span class="badge">
+                    ADMIN CONTROL CENTER
+                </span>
+
+                <h1>
+                    SafeTag Administration
+                </h1>
+
+                <p>
+                    Monitor users, responders, SafeTags and access
+                    activity.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="admin-stats">
+
+            <div class="admin-stat">
+
+                <span>👤</span>
+
+                <strong id="adminUsers">0</strong>
+
+                <small>Users</small>
+
+            </div>
+
+
+            <div class="admin-stat">
+
+                <span>🏥</span>
+
+                <strong id="adminHospitals">0</strong>
+
+                <small>Hospitals</small>
+
+            </div>
+
+
+            <div class="admin-stat">
+
+                <span>🏷️</span>
+
+                <strong id="adminTags">0</strong>
+
+                <small>SafeTags</small>
+
+            </div>
+
+
+            <div class="admin-stat">
+
+                <span>🚨</span>
+
+                <strong id="adminAccess">0</strong>
+
+                <small>Emergency Accesses</small>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- USERS -->
+
+        <div class="panel full-panel">
+
+            <div class="panel-title">
+
+                <div>
+                    <h2>Registered Users</h2>
+
+                    <p>
+                        SafeTag account information.
+                    </p>
+                </div>
+
+                <span>👤</span>
+
+            </div>
+
+            <div id="adminUsersTable"></div>
+
+        </div>
+
+
+
+        <!-- HOSPITALS -->
+
+        <div class="panel full-panel">
+
+            <div class="panel-title">
+
+                <div>
+                    <h2>Emergency Responders</h2>
+
+                    <p>
+                        Registered hospital/responder accounts.
+                    </p>
+                </div>
+
+                <span>🏥</span>
+
+            </div>
+
+            <div id="adminHospitalsTable"></div>
+
+        </div>
+
+
+
+        <!-- TAGS -->
+
+        <div class="panel full-panel">
+
+            <div class="panel-title">
+
+                <div>
+                    <h2>SafeTag Registry</h2>
+
+                    <p>
+                        Monitor active and revoked tags.
+                    </p>
+                </div>
+
+                <span>🏷️</span>
+
+            </div>
+
+            <div id="adminTagsTable"></div>
+
+        </div>
+
+
+
+        <!-- ACCESS LOGS -->
+
+        <div class="panel full-panel">
+
+            <div class="panel-title">
+
+                <div>
+                    <h2>Emergency Access Logs</h2>
+
+                    <p>
+                        Security audit trail.
+                    </p>
+                </div>
+
+                <span>🔐</span>
+
+            </div>
+
+            <div id="adminLogsTable"></div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================================
+         TOAST
+    ================================= -->
+
+    <div id="toast"></div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
